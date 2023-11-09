@@ -1,0 +1,602 @@
+Cypress Architecture
+
+Monday, November 6, 2023
+10:06 AM
+
+Cypress contains All in one which is mean:
+Before Cypress we need to set:(to run the test)
+	• Assertion library like Expect_js
+	• Framework like Qunit, Mocha
+	• Install selenium
+	• Selenium rapper like Webdriver
+	• Additional library …
+But Cypress contains everything if we install it. (Assertion library , Framework, Additional library All in one).
+
+In Selenium:
+
+
+
+But in Cypress:
+
+	• Will Run inside the browser it self without Server and driver So it will be faster to run the test.
+	• So if the Cypress in browser itself so we will access to the developer tools that exist in the browser.
+
+####################################################################################################################
+
+New Project using VScode
+
+Monday, November 6, 2023
+11:17 AM
+
+	1. Create folder and open it using Vscode.
+	2. Run:
+	PS C:\Users\Mohammad.Atia\Desktop\Cypress_Course> npm init -y
+	3. Package.json file will be created.
+	4. Package.json 
+
+{
+  "name": "cypress_course",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+	
+	5. npm install cypress
+	6. Now Package.json will incloude new lines:
+	 
+
+{
+  "name": "cypress_course",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cypress": "^13.4.0"
+  }
+}
+
+	7. To open Cypress test runner:  npx cypress open
+	
+#########################################################################################################
+
+First Test
+
+Monday, November 6, 2023
+4:26 PM
+
+Under cypress/e2e we can add how many number of tests and use/run them 
+For example   Test_Mocha_1.cy.js
+This file can contains many number of tests like
+
+it("TestCase 1",function()
+{
+    cy.log("i'm here...");
+})
+
+
+	• It is method we use it to create a test and it takes test case name/test case steps inside function.
+	• Under the same file we can group some tests as suet by using describe like:
+	
+	describe("group #1 ...",() =>{
+	    it("TestCase 1",function()
+	    {
+	        cy.log("i'm here...");
+	    })
+	    it("TestCase 2",function()
+	    {
+	        cy.log("i'm here...");
+	    })
+	    it("TestCase 3",function()
+	    {
+	        cy.log("i'm here...");
+	    })
+	})
+	
+	
+	context("group #2 ...",() => {
+	    it("TestCase 4",function()
+	    {
+	        cy.log("i'm here...");
+	    })
+	    it("TestCase 5",function()
+	    {
+	        cy.log("i'm here...");
+	    })
+	})
+	
+
+() => {}  is the same with function(){}
+
+Also describe is the same with  context for create suite
+
+##########################################################################################
+
+Mocha Hock
+
+Tuesday, November 7, 2023
+10:01 AM
+
+Ex:
+
+context("group #2 ...",() => {
+    before(() => {
+        cy.log("I'm in before");
+    })
+    beforeEach(() =>{
+        cy.log("I'm in beforeEach");
+    })
+    it("TestCase 4",function()
+    {
+        cy.log("i'm here...TestCase 4");
+    })
+    it("TestCase 5",function()
+    {
+        cy.log("i'm here...TestCase 5");
+    })
+    after(() => {
+        cy.log("I'm in after");
+    })
+    afterEach(() => {
+        cy.log("I'm in afterEach");
+    })
+})
+
+Before : This will execute one time before all tests under the same suite
+beforeEach: This will execute  before each tests under the same suite
+
+After: This will execute one time after all tests under the same suite
+afterEach: This will execute  after each tests under the same suite
+
+	• The location of Mock is under the same suite not out of it.
+
+
+################################################################################################
+
+CY Methods #1 general #1
+
+Tuesday, November 7, 2023
+1:14 PM
+
+	1. Visit url
+
+   it("TestCase 1",function()
+    {
+        cy.log("i'm here...TestCase 1");
+        cy.visit("www.google.com");
+    })
+	Note: 
+	
+	/// <reference types = "cypress"/>
+	
+	We can put it inside support/e2e.js
+	
+	
+	To use index.html file we put it inside cypress folder 
+	& then from new terminal run http server by using:
+		npm install --save-dev http-server
+		npx http-server -c-1 -o -p 8080
+
+	And inside cypress.config.js
+
+
+	const { defineConfig } = require("cypress");
+	module.exports = defineConfig({
+	  e2e: {
+	    setupNodeEvents(on, config) {
+	      // implement node event listeners here
+	    },
+	    baseUrl : 'http://127.0.0.1:8080/cypress/',
+	  },
+	});
+
+	Now inside the test just we put
+	
+    it("TC#1",() => {
+        cy.visit('/');
+    })
+	
+	cy.visit('/'); this means go to baseUrl from config file
+	
+	2. cy.viewport(900,600);
+	To controll with display size
+	
+	OR 
+	
+	Just add hight and width in config and cypress will take them without call cy.viewport
+	
+	
+	const { defineConfig } = require("cypress");
+	module.exports = defineConfig({
+	  numTestsKeptInMemory : 50,
+	  e2e: {
+	    setupNodeEvents(on, config) {
+	      // implement node event listeners here
+	    },
+	    baseUrl : 'http://127.0.0.1:8080/cypress/',
+	    viewportWidth: 550,
+	    viewportHeight: 750,
+	  },
+	});
+	
+	OR
+	
+	
+	cy.viewport("iphone-8");
+	There are many predefined viwes
+	
+	ex
+	    it("TC#1",() => {
+	        cy.viewport("iphone-8");
+	        cy.visit('/');
+	    })
+	    it("TC#2",() => {
+	        cy.viewport("ipad-2");
+	        cy.visit('/');
+	    })
+	    it("TC#3",() => {
+	        cy.viewport("samsung-note9");
+	        cy.visit('/');
+	    })
+	
+	
+	Ex:
+	
+	["iphone-8", "ipad-2", "samsung-note9"].forEach(vp => {
+	    it("TC#1",() => {
+	        cy.viewport(vp);
+	        cy.visit('/');
+	    })
+	})
+	
+	
+################################################################################################
+
+CY Methods #2 locators
+
+Tuesday, November 7, 2023
+1:14 PM
+
+	
+    //only to run one test only
+    it.only("by tag name",() => {
+        cy.visit('/');
+        cy.get('h1').first();//if we have many elements hav the same tag name and we need the first one
+	        cy.get('h1').last();//if we have many elements hav the same tag name and we need the last one
+	        cy.get('h1').eq(3);//if we have many elements hav the same tag name and we need 4th last one
+	        cy.get('li').filter('.web');//ifind all li elements and return li has class "web" 
+	        cy.get('.course-list').children('.web');//select all elements have class course-list and returen all its childerns have class web
+	        cy.get('.course-list').find('.web');//select all elements have class course-list and returen all its childerns have class web
+	        cy.get('.web').parent();//return the parent of all elements have class web
+	        cy.get('.web').parents();//return the parents from root to the first parent of all elements have class web
+	        cy.get('.web').siblings('.list1');//return all brothers have class list1 of elements have class web
+	        //or return all elements have class list1 with the same level of elemetns have class web
+	    })
+	    
+	
+	//only to run one test only
+	    it.only("by tag id => #id",() => {
+	        cy.visit('/');
+	        cy.get('#courses');
+	    })
+	    
+	
+	//only to run one test only
+	    it.only("by tag class => .className",() => {
+	        cy.visit('/');
+	        cy.get('.course-list');
+	    })
+	    
+	
+	//only to run one test only
+	    it.only("by tag class => .className.className",() => {
+	        cy.visit('/');  
+	        //if the element has a combound calass // have many classes names <li class="list1 web">Cypress</li>
+	        cy.get('.list1.web');
+	    })
+	    
+	
+	//only to run one test only
+	    it.only("by attribute",() => {
+	        cy.visit('/');
+	        cy.get('[name="Developer"]');//for multiple attribute [type = "button" ][value="Click me"]
+	    })
+	    
+	
+	//only to run one test only
+	    it.only("by text",() => {
+	        cy.visit('/');
+	        cy.contains('javascript'); //OR
+	        cy.get('li').contains('javascript');
+	    })
+	
+################################################################################################
+
+CY Methods #3 Actions
+
+Tuesday, November 7, 2023
+10:59 PM
+
+
+it("clicking...", () => {
+    cy.visit('/');
+    cy.get('.invoice-button').last().click();//click at the midle of the element
+    cy.get('.invoice-button').first().click("topLeft",{force: true});//this will click at the of element
+    cy.reload();
+    cy.get('.invoice-button').click({ multiple: true });//to click on all elements that have class invoice-button
+    cy.reload();
+    cy.get('.hidden-button').click({force:true});//click on element that coverd from another element
+    //in selenium you must remove the cover and then click on it
+    cy.reload();
+    //Normal way to fill email and password and click on login
+    cy.get('#inputEmail').type("mohammad.atia@gmail.com");
+    cy.get('#inputPassword').type("123456");
+    cy.get('.form-signin > .btn').click();
+    cy.reload();
+    //Not normal is to put email & password and then enter key without click on login
+    cy.get('#inputEmail').type("mohammad.atia@gmail.com");
+    cy.get('#inputPassword').type("123456{enter}");//{enter} is sequence and not an option
+    //fill covered textbox
+    cy.get('#coverdInput').type('inside covered textbox',{
+        //objects or options
+        delay:300,//time between each char
+        force: true,
+    })
+    //Select
+    cy.get('#courses').select('appium');//Specific text, value, or index(0,1,2,...) within a <select>.
+    //check box & radio buttons
+    cy.get('#Nuts').check();
+    cy.get('#Nuts').uncheck();
+    cy.get('#Tester').check();
+    //cy.get('#Tester').uncheck();
+    cy.reload();
+    //Right click
+    cy.get('[type = "button" ][value="Click me"]').rightclick();
+    if (cy.get( '[type = "button" ][value="Right Click"]'))
+        console.log("Right click ok")
+    else
+        console.log("Right click not ok");
+    cy.reload();
+    //double click
+    cy.get('[type = "button" ][value="Click me"]').dblclick();
+    if (cy.get( '[type = "button" ][value="Double Click"]'))
+        console.log("Double Click ok")
+    else
+        console.log("Double Click not ok");
+
+    //foucus (means click on element) and ready to accept data 
+    // blure means you are focusing on element and then you click on another element
+    // So when you want to blure on element you must be focused at first
+    cy.get('.focus.blur').focus();
+    cy.get('.focus.blur').blur();
+
+
+    //hover over & long press (mouse)
+    cy.reload();
+    cy.get('.trigger').trigger('mouseover');
+    cy.get('.trigger').trigger('mouseout');
+    cy.get('.trigger').trigger('mousedown');//long press and still press until >>
+    cy.wait(5000);
+    cy.get('.trigger').trigger('mouseup');
+})
+
+################################################################################################
+
+CY Methods #4 Should/Assertion
+
+Wednesday, November 8, 2023
+2:58 PM
+
+
+it("Assertion Testing...", () => {
+    cy.visit('/');
+    cy.get('#courses').should('be.visible'); //if the element visible or should('not.be.visible')
+
+    //have text
+    cy.get('#courses').select('appium');//Specific text, value, or index(0,1,2,...) within a <select>.
+    cy.get('#courses').should('contain.text','appium'); // text return is '\n        cypress\n        selenium\n        appium\n        wdiocourse\n    '
+    //so  should('contain.text','appium') this will pass but not we need
+    
+    //cy.get('#courses').should('have.text','appium'); // this will fail (have text e'exact')
+    cy.get('#courses').find('option:selected').should('have.text','appium');//this will find the selected item
+
+    cy.get('#inputPassword').should('have.class','form-control');
+
+    //check CSS color
+    cy.get('.focus.blur').focus().should('have.css','background-color','rgb(255, 0, 0)');
+    cy.get('.focus.blur').blur().should('have.css','background-color','rgb(0, 0, 255)');
+
+    //check element have attribute
+    cy.get('.invoice-button').first().should('have.attr','type','button');
+})
+
+
+################################################################################################
+
+CY Methods #5 Commands Advanced
+
+Wednesday, November 8, 2023
+9:05 PM
+
+
+it('comannds...',() => {
+    
+    //if we need to test our application, and some components need tested in specific time 
+    //we can use clock to set what time we need and then run the test
+    // this must be at the top of the project
+    let time_now = new Date('2002 10 10');
+    cy.clock(time_now);
+     
+    cy.visit('/');
+    //to check the time set
+    cy.get('#date').should('have.text','10/10/2002');
+    //check our url
+    cy.url().should('contain','cypress');
+    //get and check ppage title
+    cy.title().should('eq','Cypress Tutorials');
+    //forward &backword
+    cy.get('.about').click();
+    cy.go('back');
+    cy.go('forward');
+    cy.go('back');
+
+    //get cookie
+    //to see cookes inspect -> application -> left side cookes (each cookes have name value ...)
+    cy.getCookie('course').should('have.property', 'value' , 'cypress');
+    // or set new cookes
+    cy.setCookie('level','All levels mohammad');
+    //or we can get all cookes
+    cy.getAllCookies().should('have.length',3);
+
+
+    //wrap => to convert from string or any variable or object to cypress
+    let msg = "Hello";
+    let obj = {
+        name: 'Mohammad',
+        Age: 30,
+        Marred: true,
+        LovedBook: () => {
+            return obj.name + " loved " + "Life is small";
+        },
+    }
+    cy.wrap(msg).should('eq','Hello');
+    cy.wrap(obj).should('have.property','Age',30); // OR
+    cy.wrap(obj).its('Age').should('eq',30);//its is return the prorperty of the object itself so we can access 
+    // any property from obj by using its
+    cy.wrap(obj).its('name').should('eq','Mohammad');
+    //we can run property function
+    cy.wrap(obj).invoke('LovedBook').should('eq','Mohammad loved Life is small');
+
+
+
+    /*
+    every element seen inside the page is a JQuery 
+    so when a text present inside a page is like a called API to get the text 
+    so for each element we can use this methos to check the elements and its values
+    EX: we need to check the text inside id = welcome
+    */
+   cy.get('#welcome').should('have.text','Welcome to Cypress Tutorials');//OR IN ADVANCE
+   cy.get('#welcome').then((element_obj) => {
+        cy.log(element_obj);
+   })
+   cy.get('#welcome').invoke('text').then((element_text) => {
+    cy.log(element_text);
+    })
+    //to cehck the results text
+    cy.get('#welcome')
+    .invoke('text')
+    .then((element_text) => {
+        cy.wrap(element_text)
+        .should('eq','Welcome to Cypress Tutorials')
+    })//OR in more advance
+    cy.get('#welcome')
+    .invoke('text')
+    .then((element_text) => {//expect must be inside then command
+        expect(element_text).equal('Welcome to Cypress Tutorials')
+    })//OR in more advance same above
+    cy.get('#welcome')
+    .invoke('text')
+    .then((element_text) => {
+        expect(element_text).to.eq('Welcome to Cypress Tutorials')
+    })
+})
+
+
+################################################################################################
+
+
+Asynic-Alias
+
+Thursday, November 9, 2023
+11:13 AM
+
+
+
+Cypress is Asynchronous:
+
+                   --------------------------
+                   |Client|          |Server| 
+                   --------------------------
+                   ||
+                   ||
+                   ||   Make request
+                     -------------------> ||
+                   ||                     ||
+                   ||                     ||
+Continue Working   ||                     ||
+                   ||                     ||
+                   ||    Get response     ||
+                   || <------------------ ||
+                   ||   and do something
+                   ||
+
+
+
+it('Async_Alias', () => {
+    var msg = 'Hello'
+    cy.visit('/')
+    cy.get('#welcome')
+    .invoke('text')
+    .then((textmsg) => {
+        msg = textmsg
+        cy.log(msg)//This will print Welcome to Cypress Tutorials
+    })
+    cy.log(msg)//this will print Hello
+    /*NOTE: in cypress we should not use variables becouse of this issue
+    ISSUE:
+    msg outside te cypress command is back to the default value which is Hello
+    Becouse cypress does not wait between cypress commands
+    Cypress is Asynchronous
+    */
+    //Alias
+    cy.reload()
+    cy.get('#welcome').should('be.visible')
+    let url_var = cy.url() // the url varaible is {specwindow: <window>, chainerid: ch-http://127.0.0.1:8080-21} So not work as we ned
+    cy.log(url_var)
+    // Now Alias
+    cy.get('#welcome').should('be.visible')
+    cy.url().as('url_var')//now we save the url in url_var variable
+    //to print the variable
+    cy.get('@url_var').then((url_text) => {
+        cy.log(url_text)
+    })
+
+    /*
+    NOTES:
+    1- Alias is accessed from inside the test case and not accessed from outside the TC or in another TC
+        So we must use Alias inside in the same TC that we use (The same it() block)
+    2- best bractes to use Alias is to use it in before each because if we define alias variable in beforeech 
+    the alias will accessed in any TC ot it() block inside describe/context itself
+    EX: print the url from TC#1 down
+    */
+})
+context('Use alias in before each', () => {
+    before('open the url',()=>{
+        cy.visit('/')
+    })
+    beforeEach('Get the alias variable and save it in url_var',()=>{
+        cy.url().as('url_var')//if we save this inside before() not beforeeach() it will work juat for 
+        //the first TC and the second TC will not se the variable
+    })
+    it('print the url from TC#1',()=>{
+        cy.get('@url_var').then((url_text) => {
+            cy.log(url_text)
+        })
+    })
+    it('print the url from TC#2',()=>{
+        cy.get('@url_var').then((url_text) => {
+            cy.log(url_text)
+        })
+    })
+})//if we svae beforeEach in e2e.js it will be seen from all files, 
+//because e2e.js executed before everythingin the project
+
+
